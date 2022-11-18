@@ -1,0 +1,13 @@
+{
+"language":"English",
+"@language":{
+"description":"My language"
+    },
+
+
+"location":"Location",
+"@language":{
+"description":"My language"
+    }
+
+}

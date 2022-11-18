@@ -1,0 +1,14 @@
+{
+"language":"भाषा",
+"@language":{
+"description":"भाषा"
+    },
+
+
+
+"location":"स्थान",
+"@language":{
+"description":"My language"
+    }
+
+}
