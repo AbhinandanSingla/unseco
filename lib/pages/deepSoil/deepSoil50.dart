@@ -6,9 +6,9 @@ import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:unseco/dataProvider.dart';
-import 'package:unseco/pages/resultScreen.dart';
 
+import '../../dataProvider.dart';
+import '../resultScreen.dart';
 import 'deepsoil10.dart';
 
 class DeepSoilMoisture50 extends StatefulWidget {
@@ -174,8 +174,12 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture50> {
             TextButton(
               onPressed: () {
                 if (selectedImage != '') {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (ctx) => ResultScreen()));
+                  dataProvider.upload(selectedImage).then((v) => {
+                        dataProvider.getMoisture('50', v),
+                        dataProvider.calculateAverage(),
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => ResultScreen(percentage: v)))
+                      });
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text(AppLocalizations.of(context)!.err),

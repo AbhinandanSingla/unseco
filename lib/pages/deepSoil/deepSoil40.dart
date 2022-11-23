@@ -174,8 +174,11 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture40> {
             TextButton(
               onPressed: () {
                 if (selectedImage != '') {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => DeepSoilMoisture50()));
+                  dataProvider.upload(selectedImage).then((v) => {
+                        dataProvider.getMoisture('50', v),
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => DeepSoilMoisture50()))
+                      });
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text(AppLocalizations.of(context)!.err),

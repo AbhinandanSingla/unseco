@@ -7,9 +7,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:unseco/dataProvider.dart';
+import 'package:unseco/pages/deepSoil/deepSoil20.dart';
 
 import '../../services/localProvider.dart';
-import 'deepSoil20.dart';
 
 class DeepSoilMoisture10 extends StatefulWidget {
   @override
@@ -142,6 +142,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture10> {
                       setState(() {
                         selectedImage = value.path;
                       });
+
                       dataProvider.addPicture(value, '0cm');
                     }
                   });
@@ -177,8 +178,11 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture10> {
               TextButton(
                 onPressed: () {
                   if (selectedImage != '') {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (ctx) => DeepSoilMoisture20()));
+                    dataProvider.upload(selectedImage).then((v) => {
+                          dataProvider.getMoisture('10', v),
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (ctx) => DeepSoilMoisture20()))
+                        });
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(AppLocalizations.of(context)!.err),

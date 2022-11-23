@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -18,6 +19,31 @@ class _DeepSoilMoisture10State extends State<SingleImage> {
   final ImagePicker _picker = ImagePicker();
   String selectedImage = '';
 
+  _upload(String file) async {
+    String fileName = file.split('/').last;
+    FormData data = FormData.fromMap({
+      "file": await MultipartFile.fromFile(
+        file,
+        filename: fileName,
+      ),
+    });
+
+    Dio dio = Dio();
+    var response = await dio.post(
+        "https://technocratss.eastus.cloudapp.azure.com/predict",
+        data: data,
+        queryParameters: {'soil_type': "black"});
+    return response;
+  }
+
+  @override
+  void initState() {
+    Dio dio = Dio();
+
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     DataProvider dataProvider =
@@ -26,6 +52,11 @@ class _DeepSoilMoisture10State extends State<SingleImage> {
     return Scaffold(
       backgroundColor: Color(0xff06B1BC),
       appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.selectTop,
+              style: GoogleFonts.inter(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white)),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
@@ -37,19 +68,17 @@ class _DeepSoilMoisture10State extends State<SingleImage> {
       body: SafeArea(
         child: SingleChildScrollView(
             child: Container(
-          padding: EdgeInsets.all(30),
+          padding: EdgeInsets.only(
+            left: 30,
+            right: 30,
+          ),
           decoration: BoxDecoration(),
           child: Column(children: [
-            Text(AppLocalizations.of(context)!.selectTop,
-                style: GoogleFonts.inter(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white)),
             SizedBox(
               height: 30,
             ),
             Container(
-                height: 120,
+                height: 100,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                     color: Colors.white,
@@ -87,7 +116,9 @@ class _DeepSoilMoisture10State extends State<SingleImage> {
                 _picker
                     .pickImage(
                         source: ImageSource.camera,
-                        preferredCameraDevice: CameraDevice.rear)
+                        preferredCameraDevice: CameraDevice.rear,
+                        maxHeight: 600,
+                        maxWidth: 600)
                     .then((value) {
                   if (value != null) {
                     setState(() {
@@ -152,7 +183,7 @@ class _DeepSoilMoisture10State extends State<SingleImage> {
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
                               color: Color(0xff0047FF))),
-                      Text('png, jpg',
+                      Text('jpg',
                           style: GoogleFonts.inter(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
@@ -166,8 +197,13 @@ class _DeepSoilMoisture10State extends State<SingleImage> {
             TextButton(
               onPressed: () {
                 if (selectedImage != '') {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (ctx) => ResultScreen()));
+                  _upload(selectedImage).then((v) {
+                    print(v);
+                    return Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => ResultScreen(
+                              percentage: v.data["moisture"],
+                            )));
+                  });
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text(AppLocalizations.of(context)!.err),

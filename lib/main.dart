@@ -9,6 +9,7 @@ import 'package:unseco/services/localProvider.dart';
 import 'local/locals.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

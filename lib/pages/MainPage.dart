@@ -4,6 +4,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:translator/translator.dart';
 import 'package:unseco/pages/deepSoil/deepsoilTop.dart';
 import 'package:unseco/pages/singleImageSoil.dart';
 import 'package:unseco/services/localProvider.dart';
@@ -18,6 +19,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final translator = GoogleTranslator();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -25,25 +28,28 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
+  List soilType = ['Red Soil', 'Black Soil', 'Alluvial Soil'];
+  String selectedSoil = 'Red Soil';
+
+  Map<String, String> strings = {'location': ''};
+
   void _getLocation() {
     Position position;
     List<Placemark> placemarks;
-    _handleLocationPermission().then((value) async => {
-          if (value)
-            {
-              position = await Geolocator.getCurrentPosition(
-                  desiredAccuracy: LocationAccuracy.high),
-              print(
-                  '${position.latitude.toString()} ${position.latitude.toString()}'),
-              placemarks = await placemarkFromCoordinates(
-                  position.latitude, position.longitude),
-              setState(() {
-                location =
-                    '${placemarks[2].street!},${placemarks[2].locality!}';
-                print(location[2]);
-              })
-            }
+    _handleLocationPermission().then((value) async {
+      if (value) {
+        position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high);
+        print(
+            '${position.latitude.toString()} ${position.latitude.toString()}');
+        placemarks = await placemarkFromCoordinates(
+            position.latitude, position.longitude);
+        setState(() {
+          location = '${placemarks[2].street},${placemarks[2].locality!}';
+          strings['location'] = location;
         });
+      }
+    });
   }
 
   String location = "Location";
@@ -77,6 +83,17 @@ class _MyHomePageState extends State<MyHomePage> {
     return true;
   }
 
+  langTranslator({language}) {
+    Map<String, String> a = {};
+    strings.forEach((key, value) {
+      value.translate(to: language.toString()).then((value) {
+        setState(() {
+          strings.update(key, (v) => value.text);
+        });
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     _title(String val) {
@@ -104,7 +121,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return Consumer<LocaleProvider>(
       builder: (context, provider, snapshot) {
         var lang = provider.locale ?? Localizations.localeOf(context);
-
         return Scaffold(
           backgroundColor: Colors.transparent,
           body: SafeArea(
@@ -122,11 +138,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(location,
-                            style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 20,
-                                color: Colors.white)),
+                        Consumer<LocaleProvider>(
+                            builder: (ctx, v, snap) => Expanded(
+                                  child: Text(strings['location'].toString(),
+                                      style: GoogleFonts.inter(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 20,
+                                          color: Colors.white)),
+                                )),
                         IconButton(
                           onPressed: () {
                             _getLocation();
@@ -141,24 +160,59 @@ class _MyHomePageState extends State<MyHomePage> {
                     const SizedBox(
                       height: 15,
                     ),
-                    Container(
-                      width: size.width,
-                      decoration: const BoxDecoration(color: Colors.white),
-                      child: DropdownButton(
-                        hint: const Text("Select Language"),
-                        isExpanded: true,
-                        underline: Container(),
-                        value: lang,
-                        onChanged: (Locale? val) {
-                          provider.setLocale(val!);
-                        },
-                        items: L10n.all
-                            .map((e) => DropdownMenuItem(
-                                  value: e,
-                                  child: _title(e.languageCode),
-                                ))
-                            .toList(),
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.only(left: 20),
+                            width: size.width,
+                            decoration:
+                                const BoxDecoration(color: Colors.white),
+                            child: DropdownButton(
+                              hint: const Text("Select Language"),
+                              isExpanded: true,
+                              underline: Container(),
+                              value: lang,
+                              onChanged: (Locale? val) {
+                                provider.setLocale(val!);
+                                langTranslator(language: val);
+                              },
+                              items: L10n.all
+                                  .map((e) => DropdownMenuItem(
+                                        value: e,
+                                        child: _title(e.languageCode),
+                                      ))
+                                  .toList(),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.only(left: 20),
+                            width: size.width,
+                            decoration:
+                                const BoxDecoration(color: Colors.white),
+                            child: DropdownButton(
+                              hint: const Text("Select Soil Type"),
+                              isExpanded: true,
+                              underline: Container(),
+                              value: selectedSoil,
+                              items: soilType
+                                  .map((e) => DropdownMenuItem(
+                                        value: e,
+                                        child: Text(e),
+                                      ))
+                                  .toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedSoil = value.toString();
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(
                       height: 15,

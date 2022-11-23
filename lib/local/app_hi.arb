@@ -11,7 +11,7 @@
   "@singleImageBtn": {
     "description": "My language"
   },
-  "heading": "एकल छवि िटटी की नमी विश्लेषण",
+  "heading": "मृदा नमी विश्लेषण",
   "deepAnalysis": "गहरा मिटटी की नमी विश्लेषण",
   "selectSoil": "{value} सें.मी. के बाद उत्खनित मिट्टी की छवि अपलोड करें",
   "selectTop": "शीर्ष मृदा छवि का चयन करें",
@@ -20,5 +20,13 @@
   "useGallery": "गैलरी से छवि का चयन करें",
   "next": "अगला",
   "startAnal": "विश्लेषण प्रारंभ करें",
-  "err": "कृपया छवि चुनें"
+  "err": "कृपया छवि चुनें",
+  "soilType": "मिट्टी के प्रकार : {value}",
+  "@soilType": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  }
 }

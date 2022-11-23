@@ -1,4 +1,5 @@
 import "dart:io";
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -82,7 +83,8 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
             ),
             selectedImage == ''
                 ? Image.asset('assets/images/documentupload.png')
-                : Container(height: 250, child: Image.file(File(selectedImage))),
+                : Container(
+                    height: 250, child: Image.file(File(selectedImage))),
             SizedBox(
               height: 30,
             ),
@@ -172,8 +174,11 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
             TextButton(
               onPressed: () {
                 if (selectedImage != '') {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => DeepSoilMoisture30()));
+                  dataProvider.upload(selectedImage).then((v) => {
+                        dataProvider.getMoisture('20', v),
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => DeepSoilMoisture30()))
+                      });
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text(AppLocalizations.of(context)!.err),

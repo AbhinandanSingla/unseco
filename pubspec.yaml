@@ -44,6 +44,7 @@ dependencies:
   provider: ^5.0.0
   percent_indicator: ^4.0.1
   flutter_svg: ^1.1.6
+  translator: ^0.1.7
 
   flutter_localizations:
     sdk: flutter
@@ -75,6 +76,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/crops/
+    - assets/images/icons/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
