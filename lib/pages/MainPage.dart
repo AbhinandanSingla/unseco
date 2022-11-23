@@ -4,7 +4,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:unseco/pages/deepSoil/deepsoil10.dart';
+import 'package:unseco/pages/deepSoil/deepsoilTop.dart';
 import 'package:unseco/pages/singleImageSoil.dart';
 import 'package:unseco/services/localProvider.dart';
 
@@ -12,14 +12,41 @@ import '../local/locals.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key}) : super(key: key);
-  static const List<String> languages = ["English", "Hindi"];
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var selectedLanguage = MyHomePage.languages.first;
+  @override
+  void initState() {
+    // TODO: implement initState
+    _getLocation();
+    super.initState();
+  }
+
+  void _getLocation() {
+    Position position;
+    List<Placemark> placemarks;
+    _handleLocationPermission().then((value) async => {
+          if (value)
+            {
+              position = await Geolocator.getCurrentPosition(
+                  desiredAccuracy: LocationAccuracy.high),
+              print(
+                  '${position.latitude.toString()} ${position.latitude.toString()}'),
+              placemarks = await placemarkFromCoordinates(
+                  position.latitude, position.longitude),
+              setState(() {
+                location =
+                    '${placemarks[2].street!},${placemarks[2].locality!}';
+                print(location[2]);
+              })
+            }
+        });
+  }
+
+  String location = "Location";
 
   Future<bool> _handleLocationPermission() async {
     bool serviceEnabled;
@@ -65,7 +92,6 @@ class _MyHomePageState extends State<MyHomePage> {
             style: TextStyle(fontSize: 16.0),
           );
 
-
         default:
           return Text(
             'English',
@@ -96,31 +122,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(AppLocalizations.of(context)!.location,
+                        Text(location,
                             style: GoogleFonts.inter(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 20,
                                 color: Colors.white)),
                         IconButton(
                           onPressed: () {
-                            Position position;
-                            List<Placemark> placemarks;
-                            _handleLocationPermission().then((value) async => {
-                                  if (value)
-                                    {
-                                      position =
-                                          await Geolocator.getCurrentPosition(
-                                              desiredAccuracy:
-                                                  LocationAccuracy.high),
-                                      print(
-                                          '${position.latitude.toString()} ${position.latitude.toString()}'),
-                                      placemarks =
-                                          await placemarkFromCoordinates(
-                                              position.latitude,
-                                              position.longitude),
-                                      print(placemarks.toString())
-                                    }
-                                });
+                            _getLocation();
                           },
                           icon: const Icon(
                             Icons.location_on_outlined,
@@ -155,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       height: 15,
                     ),
                     Text(
-                      "Soil Moisture Analysis ",
+                      AppLocalizations.of(context)!.heading,
                       style: GoogleFonts.inter(
                           fontSize: 30,
                           fontWeight: FontWeight.w500,
@@ -188,8 +197,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                               Expanded(
                                 child: Text(
-                                  "Single Image Soil"
-                                  "\n Moisture Analysis",
+                                  AppLocalizations.of(context)!.singleImageBtn,
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.inter(
                                       fontWeight: FontWeight.w500,
@@ -205,7 +213,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     GestureDetector(
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => DeepSoilMoisture10())),
+                          builder: (ctx) => DeepSoilMoistureTop())),
                       child: Container(
                           height: 120,
                           padding: const EdgeInsets.all(20),
@@ -221,8 +229,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                               Expanded(
                                 child: Text(
-                                  "Deep Image Soil"
-                                  "\n Moisture Analysis",
+                                  AppLocalizations.of(context)!.deepAnalysis,
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.inter(
                                       fontWeight: FontWeight.w500,

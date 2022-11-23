@@ -1,14 +1,24 @@
 {
-"language":"भाषा",
-"@language":{
-"description":"भाषा"
-    },
-
-
-
-"location":"स्थान",
-"@language":{
-"description":"My language"
-    }
-
+  "language": "भाषा",
+  "@language": {
+    "description": "भाषा"
+  },
+  "location": "स्थान",
+  "@location": {
+    "description": "My language"
+  },
+  "singleImageBtn": "एकल छवि मिटटी की नमी विश्लेषण",
+  "@singleImageBtn": {
+    "description": "My language"
+  },
+  "heading": "एकल छवि िटटी की नमी विश्लेषण",
+  "deepAnalysis": "गहरा मिटटी की नमी विश्लेषण",
+  "selectSoil": "{value} सें.मी. के बाद उत्खनित मिट्टी की छवि अपलोड करें",
+  "selectTop": "शीर्ष मृदा छवि का चयन करें",
+  "uploadTop": "मिट्टी के शीर्ष स्तर को अपलोड करें",
+  "useCamera": "कैमरे का प्रयोग करें",
+  "useGallery": "गैलरी से छवि का चयन करें",
+  "next": "अगला",
+  "startAnal": "विश्लेषण प्रारंभ करें",
+  "err": "कृपया छवि चुनें"
 }

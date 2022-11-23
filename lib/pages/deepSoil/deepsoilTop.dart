@@ -9,14 +9,14 @@ import 'package:provider/provider.dart';
 import 'package:unseco/dataProvider.dart';
 
 import '../../services/localProvider.dart';
-import 'deepSoil20.dart';
+import 'deepsoil10.dart';
 
-class DeepSoilMoisture10 extends StatefulWidget {
+class DeepSoilMoistureTop extends StatefulWidget {
   @override
-  State<DeepSoilMoisture10> createState() => _DeepSoilMoisture10State();
+  State<DeepSoilMoistureTop> createState() => _DeepSoilMoisture10State();
 }
 
-class _DeepSoilMoisture10State extends State<DeepSoilMoisture10> {
+class _DeepSoilMoisture10State extends State<DeepSoilMoistureTop> {
   final ImagePicker _picker = ImagePicker();
   String selectedImage = '';
 
@@ -43,7 +43,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture10> {
             padding: EdgeInsets.all(30),
             decoration: BoxDecoration(),
             child: Column(children: [
-              Text(AppLocalizations.of(context)!.selectSoil("0"),
+              Text(AppLocalizations.of(context)!.selectTop,
                   style: GoogleFonts.inter(
                       fontSize: 30,
                       fontWeight: FontWeight.w500,
@@ -69,7 +69,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture10> {
                         ),
                         Expanded(
                           child: Text(
-                            AppLocalizations.of(context)!.selectSoil("0"),
+                            AppLocalizations.of(context)!.selectTop,
                             textAlign: TextAlign.center,
                             style: GoogleFonts.inter(
                                 fontWeight: FontWeight.w500, fontSize: 20),
@@ -97,7 +97,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture10> {
                           preferredCameraDevice: CameraDevice.rear)
                       .then((value) {
                     if (value != null) {
-                      dataProvider.addPicture(value, '0cm');
+                      dataProvider.addPicture(value, 'top');
                       setState(() {
                         selectedImage = value.path;
                       });
@@ -142,7 +142,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture10> {
                       setState(() {
                         selectedImage = value.path;
                       });
-                      dataProvider.addPicture(value, '0cm');
+                      dataProvider.addPicture(value, 'top');
                     }
                   });
                 },
@@ -178,7 +178,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture10> {
                 onPressed: () {
                   if (selectedImage != '') {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (ctx) => DeepSoilMoisture20()));
+                        builder: (ctx) => DeepSoilMoisture10()));
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(AppLocalizations.of(context)!.err),

@@ -1,13 +1,40 @@
 {
-"language":"English",
-"@language":{
-"description":"My language"
-    },
-
-
-"location":"Location",
-"@language":{
-"description":"My language"
+  "language": "English",
+  "@language": {
+    "description": "My language"
+  },
+  "location": "Location",
+  "@location": {
+    "description": "My language"
+  },
+  "singleImageBtn": "Single Image Soil Moisture Analysis",
+  "@singleImageBtn": {
+    "description": "My language"
+  },
+  "heading": "Soil Moisture Analysis",
+  "deepAnalysis": "Deep Soil Moisture Analysis",
+  "selectSoil": "Upload Excavated Soil Image after {value} cm",
+  "selectTop": "Select Top Soil Image",
+  "uploadTop": "Upload the top level of soil",
+  "useCamera": "Use Camera",
+  "useGallery": "Select the image from Gallery",
+  "err": "Please Select Image",
+  "next": "Next",
+  "startAnal": "Start Analysis",
+  "title": "Soil Moisture",
+  "@selectSoil": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
     }
-
+  },
+  "soilType": "Soil Type : {value}",
+  "@soilType": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -1,5 +1,7 @@
+import "dart:io";
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -39,9 +41,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
           padding: EdgeInsets.all(30),
           decoration: BoxDecoration(),
           child: Column(children: [
-            Text(
-                'Select Excavated Soil'
-                '\n Image after 20 cm ',
+            Text(AppLocalizations.of(context)!.selectSoil("15"),
                 style: GoogleFonts.inter(
                     fontSize: 30,
                     fontWeight: FontWeight.w500,
@@ -67,7 +67,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
                       ),
                       Expanded(
                         child: Text(
-                          "Upload Excavated\n Soil Image after 20 cm",
+                          AppLocalizations.of(context)!.selectSoil("15"),
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
                               fontWeight: FontWeight.w500, fontSize: 20),
@@ -82,7 +82,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
             ),
             selectedImage == ''
                 ? Image.asset('assets/images/documentupload.png')
-                : Container(height: 250, child: Image.asset(selectedImage)),
+                : Container(height: 250, child: Image.file(File(selectedImage))),
             SizedBox(
               height: 30,
             ),
@@ -94,7 +94,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
                         preferredCameraDevice: CameraDevice.rear)
                     .then((value) {
                   if (value != null) {
-                    dataProvider.addPicture(value, '20Cm');
+                    dataProvider.addPicture(value, '15cm');
                     setState(() {
                       selectedImage = value.path;
                     });
@@ -110,7 +110,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
                   Icon(Icons.camera_alt_outlined, color: Colors.white),
                   SizedBox(width: 15),
                   Text(
-                    'Use Camera',
+                    AppLocalizations.of(context)!.useCamera,
                     style: GoogleFonts.inter(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
@@ -138,7 +138,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
                     setState(() {
                       selectedImage = value.path;
                     });
-                    dataProvider.addPicture(value, '20Cm');
+                    dataProvider.addPicture(value, '15cm');
                   }
                 });
               },
@@ -153,7 +153,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Select the image from Gallery",
+                      Text(AppLocalizations.of(context)!.useGallery,
                           style: GoogleFonts.inter(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
@@ -174,6 +174,10 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
                 if (selectedImage != '') {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (ctx) => DeepSoilMoisture30()));
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(AppLocalizations.of(context)!.err),
+                  ));
                 }
               },
               child: Container(
@@ -182,7 +186,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
                 decoration: BoxDecoration(
                     color: Color(0xffFFA030),
                     borderRadius: BorderRadius.circular(15)),
-                child: Text('Next',
+                child: Text(AppLocalizations.of(context)!.next,
                     style: GoogleFonts.inter(fontSize: 20, color: Colors.white),
                     textAlign: TextAlign.center),
               ),
