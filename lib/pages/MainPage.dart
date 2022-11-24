@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:geocoding/geocoding.dart';
@@ -5,7 +6,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:translator/translator.dart';
-import 'package:unseco/pages/deepSoil/deepsoilTop.dart';
+import 'package:unseco/dataProvider.dart';
+import 'package:unseco/pages/deepSoil/deepsoil10.dart';
 import 'package:unseco/pages/singleImageSoil.dart';
 import 'package:unseco/services/localProvider.dart';
 
@@ -21,17 +23,17 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final translator = GoogleTranslator();
 
+  List soilType = ['Red Soil', 'Black Soil', 'Alluvial Soil'];
+  String selectedSoil = 'Red Soil';
+
+  Map<String, String> strings = {'location': 'Loading Location...'};
+
   @override
   void initState() {
     // TODO: implement initState
     _getLocation();
     super.initState();
   }
-
-  List soilType = ['Red Soil', 'Black Soil', 'Alluvial Soil'];
-  String selectedSoil = 'Red Soil';
-
-  Map<String, String> strings = {'location': ''};
 
   void _getLocation() {
     Position position;
@@ -118,6 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     Size size = MediaQuery.of(context).size;
+    final dataProvider = Provider.of<DataProvider>(context, listen: false);
     return Consumer<LocaleProvider>(
       builder: (context, provider, snapshot) {
         var lang = provider.locale ?? Localizations.localeOf(context);
@@ -125,6 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
           backgroundColor: Colors.transparent,
           body: SafeArea(
               child: SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
             child: Container(
                 padding: EdgeInsets.all(30),
                 width: size.width,
@@ -134,6 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   colors: [Color(0xff06B1BC), Color(0xff56D66B)],
                 )),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -166,8 +171,9 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: Container(
                             padding: EdgeInsets.only(left: 20),
                             width: size.width,
-                            decoration:
-                                const BoxDecoration(color: Colors.white),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(5)),
                             child: DropdownButton(
                               hint: const Text("Select Language"),
                               isExpanded: true,
@@ -187,31 +193,32 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                         SizedBox(width: 20),
-                        Expanded(
-                          child: Container(
-                            padding: EdgeInsets.only(left: 20),
-                            width: size.width,
-                            decoration:
-                                const BoxDecoration(color: Colors.white),
-                            child: DropdownButton(
-                              hint: const Text("Select Soil Type"),
-                              isExpanded: true,
-                              underline: Container(),
-                              value: selectedSoil,
-                              items: soilType
-                                  .map((e) => DropdownMenuItem(
-                                        value: e,
-                                        child: Text(e),
-                                      ))
-                                  .toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedSoil = value.toString();
-                                });
-                              },
+                        Consumer<DataProvider>(builder: (context, value, w) {
+                          return Expanded(
+                            child: Container(
+                              padding: EdgeInsets.only(left: 20),
+                              width: size.width,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: DropdownButton(
+                                hint: const Text("Select Soil Type"),
+                                isExpanded: true,
+                                underline: Container(),
+                                value: value.soilType,
+                                items: soilType
+                                    .map((e) => DropdownMenuItem(
+                                          value: e,
+                                          child: Text(e),
+                                        ))
+                                    .toList(),
+                                onChanged: (val) {
+                                  value.setSoilType(val.toString());
+                                },
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        }),
                       ],
                     ),
                     const SizedBox(
@@ -267,7 +274,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     GestureDetector(
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => DeepSoilMoistureTop())),
+                          builder: (ctx) => DeepSoilMoisture10())),
                       child: Container(
                           height: 120,
                           padding: const EdgeInsets.all(20),
@@ -293,6 +300,9 @@ class _MyHomePageState extends State<MyHomePage> {
                               )
                             ],
                           )),
+                    ),
+                    SizedBox(
+                      height: 30,
                     )
                   ],
                 )),

@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
       child: Consumer<LocaleProvider>(
         builder: (context, provider, snapshot) => MaterialApp(
           locale: provider.locale,
-          title: 'Flutter Demo',
+          title: 'UNESCO',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             primarySwatch: Colors.blue,

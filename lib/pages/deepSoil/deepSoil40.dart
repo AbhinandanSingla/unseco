@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:unseco/contants.dart';
 import 'package:unseco/dataProvider.dart';
 import 'package:unseco/pages/deepSoil/deepSoil50.dart';
 
@@ -35,21 +36,18 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture40> {
             },
           ),
           backgroundColor: Colors.transparent,
+          title: Text(AppLocalizations.of(context)!.selectSoil("45"),
+              style: GoogleFonts.inter(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white)),
           elevation: 0),
       body: SafeArea(
         child: SingleChildScrollView(
             child: Container(
-          padding: EdgeInsets.all(30),
+          padding: EdgeInsets.only(right: 30,left: 30),
           decoration: BoxDecoration(),
           child: Column(children: [
-            Text(AppLocalizations.of(context)!.selectSoil("45"),
-                style: GoogleFonts.inter(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white)),
-            SizedBox(
-              height: 30,
-            ),
             GestureDetector(
               onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(builder: (ctx) => DeepSoilMoisture10())),
@@ -82,11 +80,24 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture40> {
               height: 30,
             ),
             selectedImage == ''
-                ? Image.asset('assets/images/documentupload.png')
+                ? GestureDetector(
+                    onTap: () => _picker
+                            .pickImage(
+                                source: ImageSource.gallery,
+                                maxWidth: 600,
+                                maxHeight: 600)
+                            .then((value) {
+                          if (value != null) {
+                            setState(() {
+                              selectedImage = value.path;
+                            });
+                          }
+                        }),
+                    child: Image.asset('assets/images/documentupload.png'))
                 : Container(
                     height: 250, child: Image.file(File(selectedImage))),
             SizedBox(
-              height: 30,
+              height: 25,
             ),
             GestureDetector(
               onTap: () {
@@ -96,7 +107,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture40> {
                         preferredCameraDevice: CameraDevice.rear)
                     .then((value) {
                   if (value != null) {
-                    dataProvider.addPicture(value, '45cm');
+                    dataProvider.addPicture(value, 'top');
                     setState(() {
                       selectedImage = value.path;
                     });
@@ -132,50 +143,57 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture40> {
                     borderRadius: BorderRadius.circular(20)),
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 15),
             GestureDetector(
               onTap: () {
-                _picker.pickImage(source: ImageSource.gallery).then((value) {
+                _picker
+                    .pickImage(
+                        source: ImageSource.gallery,
+                        maxWidth: 600,
+                        maxHeight: 600)
+                    .then((value) {
                   if (value != null) {
                     setState(() {
                       selectedImage = value.path;
                     });
-                    dataProvider.addPicture(value, '45cm');
                   }
                 });
               },
               child: Container(
+                width: size.width * 0.6,
+                padding: const EdgeInsets.only(
+                    top: 15, bottom: 15, right: 10, left: 10),
                 child:
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Icon(
-                    Icons.image_search_sharp,
-                    color: Color(0xff0047FF),
-                  ),
-                  SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(AppLocalizations.of(context)!.useGallery,
-                          style: GoogleFonts.inter(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xff0047FF))),
-                      Text('png, jpg',
-                          style: GoogleFonts.inter(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xff0047FF)))
-                    ],
+                  Icon(Icons.photo, color: Colors.white),
+                  SizedBox(width: 15),
+                  Text(
+                    AppLocalizations.of(context)!.useGallery,
+                    style: GoogleFonts.inter(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        shadows: [
+                          Shadow(
+                              color: Colors.black.withOpacity(0.4),
+                              offset: Offset(0, 1),
+                              blurRadius: 3)
+                        ],
+                        color: Colors.white,
+                        fontStyle: FontStyle.italic),
                   )
                 ]),
+                decoration: BoxDecoration(
+                    color: Color(0xffFFA030),
+                    border: Border.all(color: Colors.white, width: 2),
+                    borderRadius: BorderRadius.circular(20)),
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 15),
             TextButton(
               onPressed: () {
                 if (selectedImage != '') {
                   dataProvider.upload(selectedImage).then((v) => {
-                        dataProvider.getMoisture('50', v),
+                        dataProvider.getMoisture('40', v),
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (ctx) => DeepSoilMoisture50()))
                       });
@@ -185,16 +203,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture40> {
                   ));
                 }
               },
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                    color: Color(0xffFFA030),
-                    borderRadius: BorderRadius.circular(15)),
-                child: Text(AppLocalizations.of(context)!.next,
-                    style: GoogleFonts.inter(fontSize: 20, color: Colors.white),
-                    textAlign: TextAlign.center),
-              ),
+              child: nextBtn(context),
             )
           ]),
         )),
