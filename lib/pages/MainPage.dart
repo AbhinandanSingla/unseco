@@ -36,6 +36,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _getLocation() {
+    final dataProvider = Provider.of<DataProvider>(context, listen: false);
+
     Position position;
     List<Placemark> placemarks;
     _handleLocationPermission().then((value) async {
@@ -44,6 +46,12 @@ class _MyHomePageState extends State<MyHomePage> {
             desiredAccuracy: LocationAccuracy.high);
         print(
             '${position.latitude.toString()} ${position.latitude.toString()}');
+        dataProvider.setCoordinate(
+            position.latitude.toString(), position.latitude.toString());
+        print("==============================================================================");
+        print('${
+            position.latitude.toString()}${position.latitude.toString()}');
+        print("==============================================================================");
         placemarks = await placemarkFromCoordinates(
             position.latitude, position.longitude);
         setState(() {

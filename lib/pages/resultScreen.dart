@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:translator/translator.dart';
@@ -21,6 +22,40 @@ class ResultScreen extends StatefulWidget {
 
 class _ResultScreenState extends State<ResultScreen> {
   List crops = [];
+  Map weatherIcon = {
+    'sun': 'assets/weatherIcon/sun.png',
+    'rain': 'assets/weatherIcon/rain.png',
+    'humidity': 'assets/weatherIcon/cloud.png'
+  };
+  bool loading = true;
+
+  Future getWeather(cropName) async {
+    Dio dio = Dio();
+    final dataProvider = Provider.of<DataProvider>(context, listen: false);
+    dataProvider.coordinates['lat'];
+    dataProvider.coordinates['long'];
+    Response data = await dio.get(
+        'https://technocratss.eastus.cloudapp.azure.com/predict-future-moisture',
+        queryParameters: {
+          'moisture': double.parse(widget.percentage).toStringAsFixed(0),
+          'soil_type': dataProvider.soilType.split(' ')[0].toLowerCase(),
+          'crop_name': cropName.toString().toLowerCase(),
+          'lat': dataProvider.coordinates['lat'],
+          'lng': dataProvider.coordinates['long']
+        });
+    print(
+        "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    print(double.parse(widget.percentage).toStringAsFixed(0));
+    print(
+      dataProvider.soilType.split(' ')[0].toLowerCase(),
+    );
+    print(cropName);
+    print(
+      dataProvider.coordinates['lat'].toString(),
+    );
+    print(dataProvider.coordinates['long'].toString());
+    return data.data;
+  }
 
   getCrops(soilType) async {
     Dio dio = Dio();
@@ -28,7 +63,7 @@ class _ResultScreenState extends State<ResultScreen> {
         'https://technocratss.eastus.cloudapp.azure.com/eligible-crops',
         queryParameters: {
           'soilMoisture': double.parse(widget.percentage).toStringAsFixed(0),
-          'soil_type': soilType.split(' ')[0].toLowerCase()
+          'soil_type': soilType.split(' ')[0].toLowerCase(),
         });
     print(d.data);
     return d.data;
@@ -57,17 +92,17 @@ class _ResultScreenState extends State<ResultScreen> {
     // TODO: implement initState
     final provider = Provider.of<DataProvider>(context, listen: false);
     getCrops(provider.soilType)
-        .then((v) => setState(() => {crops = v}))
+        .then((v) => setState(() => {loading = false, crops = v}))
         .then((val) => langTranslator(context: context));
     super.initState();
   }
 
   var count = 1;
+  int selected = -1;
 
   @override
   Widget build(BuildContext context) {
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
-
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
@@ -125,137 +160,384 @@ class _ResultScreenState extends State<ResultScreen> {
                 ),
               ),
               SizedBox(height: 20),
-              Text('List of growable Plant ',
-                  style: GoogleFonts.inter(
-                      fontSize: 30, fontWeight: FontWeight.w500)),
+              '${double.parse(widget.percentage).toStringAsFixed(0)}' == '0'
+                  ? Container()
+                  : Text('List of growable Plant ',
+                      style: GoogleFonts.inter(
+                          fontSize: 30, fontWeight: FontWeight.w500)),
               SizedBox(height: 20),
-              // Container(
-              //   padding: EdgeInsets.only(left: 20, right: 10),
-              //   width: size.width,
-              //   height: 40,
-              //   decoration: BoxDecoration(
-              //       borderRadius: BorderRadius.circular(20),
-              //       border: Border.all(
-              //         color: Colors.black,
-              //         width: 2,
-              //       )),
-              //   child: Row(children: [
-              //     // Text(
-              //     //   "Search the plant here",
-              //     //   style: GoogleFonts.inter(
-              //     //       fontSize: 20, fontWeight: FontWeight.w600),
-              //     // ),
-              //   ]),
-              // ),
-              ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: crops.length,
-                  itemBuilder: (ctx, index) => Container(
-                        margin: EdgeInsets.only(bottom: 10, top: 10),
-                        padding: EdgeInsets.all(30),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Color(0xffFFA030)),
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Column(children: [
-                          Row(children: [
-                            Container(
-                              width: 30,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  color: Color(0xffFFA800)),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  color: Color(0xffD1D9DA)),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  color: Color(0xff00BF9A)),
+              Stack(
+                children: [
+                  ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: crops.length,
+                      itemBuilder: (ctx, index) {
+                        getWeather(
+                          '${crops[index]['name'].toString().toUpperCase()}',
+                        );
+                        if (crops.length == 0) {
+                          return Container(
+                            child: Lottie.asset('assets/lottie/plants.json'),
+                          );
+                        }
+                        return FutureBuilder(
+                            future: getWeather(
+                                '${crops[index]['name'].toString().toUpperCase()}'),
+                            builder: (ctx, snap) {
+                              if (snap.data == null) {
+                                return Container();
+                              }
+                              if (snap.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Text("Loading Data .....");
+                              }
+                              print(snap.data);
+                              return Consumer<DataProvider>(
+                                  builder: (context, snapshot, v) {
+                                return Container(
+                                  margin: EdgeInsets.only(bottom: 10, top: 10),
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                      border:
+                                          Border.all(color: Color(0xffFFA030)),
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              Container(
+                                                width: 30,
+                                                height: 30,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30),
+                                                    color: Color(0xffFFA800)),
+                                              ),
+                                              SizedBox(width: 5),
+                                              Container(
+                                                width: 30,
+                                                height: 30,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30),
+                                                    color: Color(0xffD1D9DA)),
+                                              ),
+                                              SizedBox(width: 5),
+                                              Container(
+                                                width: 30,
+                                                height: 30,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30),
+                                                    color: Color(0xff00BF9A)),
+                                              )
+                                            ]),
+                                        SizedBox(height: 20),
+                                        Row(
+                                          children: [
+                                            // Image.asset(
+                                            //     "assets/images/crops/Rectangle 19.png"),
+                                            SizedBox(width: 20),
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                    '${crops[index]['name'].toString().toUpperCase()}',
+                                                    overflow: TextOverflow.fade,
+                                                    style: GoogleFonts.inter(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w600)),
+                                                SizedBox(height: 10),
+                                                Text(
+                                                    "Level Needed: ${crops[index]['minmoisture']}/${crops[index]['maxmoisture']}%",
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: GoogleFonts.inter(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w600))
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                        SizedBox(height: 10),
+                                        line(size),
+                                        ListTile(
+                                          title: Text("As per Moisture Level"),
+                                          trailing: Image.asset(
+                                              'assets/images/icons/shieldtick.png'),
+                                        ),
+                                        ListTile(
+                                          title: Text("+ Weather Report"),
+                                          trailing: Image.asset(
+                                              'assets/images/icons/shieldtick.png'),
+                                        ),
+                                        snapshot.selectedIndex == index
+                                            ? Column(
+                                                children: [
+                                                  Container(
+                                                    child: Column(children: [
+                                                      line(size),
+                                                      SizedBox(
+                                                        height: 20,
+                                                      )
+                                                    ]),
+                                                  ),
+                                                  Text(
+                                                      '5DAY - WEATHER  FORECAST',
+                                                      style: GoogleFonts.inter(
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                          fontSize: 15),
+                                                      textAlign:
+                                                          TextAlign.left),
+                                                  SizedBox(height: 10),
+                                                  Container(
+                                                      padding:
+                                                          EdgeInsets.all(8),
+                                                      decoration: BoxDecoration(
+                                                          color:
+                                                              Color(0xffD9D9D9),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(9)),
+                                                      child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceAround,
+                                                          children:
+                                                              List.generate(
+                                                            5,
+                                                            (index) {
+                                                              DateTime now =
+                                                                  new DateTime
+                                                                      .now();
+                                                              var date = now
+                                                                  .add(Duration(
+                                                                      days:
+                                                                          index))
+                                                                  .day
+                                                                  .toString();
+                                                              if (now.day
+                                                                      .toString() ==
+                                                                  date) {
+                                                                date = 'Today';
+                                                              } else {
+                                                                date =
+                                                                    '${date}Nov';
+                                                              }
+                                                              return Column(
+                                                                children: [
+                                                                  Text(date),
+                                                                  Image.asset(
+                                                                      'assets/weatherIcon/sun.png'),
+                                                                  Text(
+                                                                      "${snap.data[index]['temp'].toString()}º")
+                                                                ],
+                                                              );
+                                                            },
+                                                          ))),
+                                                  SizedBox(height: 10),
+                                                  Text(
+                                                      '5DAY - SoilMoisture FORECAST',
+                                                      style: GoogleFonts.inter(
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                          fontSize: 15),
+                                                      textAlign:
+                                                          TextAlign.left),
+                                                  SizedBox(height: 15),
+                                                  Row(children: [
+                                                    Image.asset(
+                                                        'assets/images/icons/Vector (2).png'),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Text(
+                                                        'No irrigation Required',
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700)),
+                                                  ]),
+                                                  SizedBox(
+                                                    height: 4,
+                                                  ),
+                                                  Row(children: [
+                                                    Image.asset(
+                                                        'assets/images/icons/waterDrop.png'),
+                                                    SizedBox(
+                                                      width: 12,
+                                                    ),
+                                                    Text('Irrigation Required',
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700)),
+                                                  ]),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Container(
+                                                      decoration: BoxDecoration(
+                                                          color: Color(
+                                                                  0xffD9D9D9)
+                                                              .withOpacity(0.8),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(8)),
+                                                      padding: EdgeInsets.only(
+                                                          top: 20, bottom: 20),
+                                                      child: Table(
+                                                          children:
+                                                              List.generate(5,
+                                                                  (index) {
+                                                        DateTime now =
+                                                            new DateTime.now();
+                                                        var date = now
+                                                            .add(Duration(
+                                                                days: index))
+                                                            .day
+                                                            .toString();
+                                                        if (now.day
+                                                                .toString() ==
+                                                            date) {
+                                                          date = 'Today';
+                                                        } else {
+                                                          date = '${date}Nov';
+                                                        }
+                                                        return TableRow(
+                                                            children: [
+                                                              tableCell(Text(
+                                                                  date,
+                                                                  style: TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w700))),
+                                                              tableCell(Image.asset(
+                                                                  'assets/weatherIcon/sun.png')),
+                                                              tableCell(Text(
+                                                                  "${snap.data[index]['moisture'].toString()}%",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          12.0,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w700))),
+                                                              tableCell(
+                                                                  Container(
+                                                                width: 100,
+                                                                height: 5,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
+                                                                                2),
+                                                                        gradient:
+                                                                            LinearGradient(
+                                                                                colors: [
+                                                                              Color(0xff56D66B),
+                                                                              Color(0xffCACD2B),
+                                                                              Color(0xffFFA800),
+                                                                            ])),
+                                                              )),
+                                                              tableCell(snap.data !=
+                                                                          null &&
+                                                                      snap.data[
+                                                                              index]
+                                                                          [
+                                                                          'required_irrigation']
+                                                                  ? Image.asset(
+                                                                      'assets/images/icons/waterDrop.png')
+                                                                  : Image.asset(
+                                                                      'assets/images/icons/blueTick.png')),
+                                                            ]);
+                                                      }))),
+                                                  SizedBox(
+                                                    height: 20,
+                                                  ),
+                                                ],
+                                              )
+                                            : Container(),
+                                        GestureDetector(
+                                          onTap: () => {
+                                            if (snapshot.selectedIndex == index)
+                                              {snapshot.setIndex(-1)}
+                                            else
+                                              {snapshot.setIndex(index)}
+                                          },
+                                          child: Container(
+                                            width: double.infinity,
+                                            padding: EdgeInsets.all(20),
+                                            decoration: BoxDecoration(
+                                                color: Color(0xffFFA030),
+                                                borderRadius:
+                                                    BorderRadius.circular(15)),
+                                            child: Text(
+                                                snapshot.selectedIndex == index
+                                                    ? "Close"
+                                                    : 'Get Weather Report',
+                                                style: GoogleFonts.inter(
+                                                    fontSize: 20,
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.w700),
+                                                textAlign: TextAlign.center),
+                                          ),
+                                        ),
+                                      ]),
+                                );
+                              });
+                            });
+                      }),
+                  loading
+                      ? Container(
+                          child: Column(
+                          children: [
+                            // Lottie.asset('assets/lottie/plants.json',
+                            //     height: 80),
+                            Text(
+                              "Loading Data Please Wait",
+                              style: GoogleFonts.inter(fontSize: 20),
                             )
-                          ]),
-                          Row(
-                            children: [
-                              // Image.asset(
-                              //     "assets/images/crops/Rectangle 19.png"),
-                              SizedBox(width: 20),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(crops[index]['name'],
-                                      style: GoogleFonts.inter(fontSize: 20)),
-                                  SizedBox(height: 10),
-                                  Text(
-                                      "Level Needed: ${crops[index]['minmoisture']}%/${crops[index]['maxmoisture']}%")
-                                ],
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Container(
-                            width: size.width,
-                            height: 2,
-                            decoration: BoxDecoration(color: Color(0xff06B1BC)),
-                          ),
-                          ListTile(
-                            title: Text("As per Moisture Level"),
-                            trailing: Image.asset(
-                                'assets/images/icons/shieldtick.png'),
-                          ),
-                          ListTile(
-                            title: Text("+ Weather Report"),
-                            trailing:
-                                Image.asset('assets/images/icons/close.png'),
-                          )
-                        ]),
-                      ))
+                          ],
+                        ))
+                      : Container()
+                ],
+              )
             ]),
           )),
         ));
   }
 
-  Column card(int index, Size size) {
-    return Column(children: [
-      Row(
-        children: [
-          // Image.asset(
-          //     "assets/images/crops/Rectangle 19.png"),
-          SizedBox(width: 20),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(crops[index]['name'],
-                  style: GoogleFonts.inter(fontSize: 20)),
-              SizedBox(height: 10),
-              Text(
-                  "Level Needed: ${crops[index]['minmoisture']}%/${crops[index]['maxmoisture']}%")
-            ],
-          )
-        ],
-      ),
-      SizedBox(height: 10),
-      Container(
-        width: size.width,
-        height: 2,
-        decoration: BoxDecoration(color: Color(0xff06B1BC)),
-      ),
-      ListTile(
-        title: Text("As per Moisture Level"),
-        trailing: Image.asset('assets/images/icons/shieldtick.png'),
-      ),
-      ListTile(
-        title: Text("+ Weather Report"),
-        trailing: Image.asset('assets/images/icons/close.png'),
-      )
-    ]);
+  SizedBox tableCell(Widget v) {
+    return SizedBox(
+        height: 30,
+        child:
+            Column(mainAxisAlignment: MainAxisAlignment.center, children: [v]));
+  }
+
+  Container line(Size size) {
+    return Container(
+      width: size.width * 0.8,
+      height: 2,
+      decoration: BoxDecoration(color: Color(0xff06B1BC)),
+    );
   }
 }

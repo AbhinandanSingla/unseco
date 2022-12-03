@@ -7,9 +7,22 @@ class DataProvider extends ChangeNotifier {
   var data = {};
   Map moistures = {};
   var soilType = 'Red Soil';
+  Map coordinates = {" lat": '', "long": ""};
+  int selectedIndex = -1;
+
+  setIndex(index) {
+    selectedIndex = index;
+    notifyListeners();
+  }
 
   setSoilType(v) {
     soilType = v;
+    notifyListeners();
+  }
+
+  setCoordinate(lat, long) {
+    coordinates["lat"] = lat;
+    coordinates['long'] = long;
     notifyListeners();
   }
 
