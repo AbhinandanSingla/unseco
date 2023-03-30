@@ -9,7 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:unseco/contants.dart';
-import 'package:unseco/dataProvider.dart';
+import 'package:unseco/services/dataProvider.dart';
 import 'package:unseco/pages/resultScreen.dart';
 
 class SingleImage extends StatefulWidget {

@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../../dataProvider.dart';
+import '../../services/dataProvider.dart';
 import '../resultScreen.dart';
 import 'deepsoil10.dart';
 

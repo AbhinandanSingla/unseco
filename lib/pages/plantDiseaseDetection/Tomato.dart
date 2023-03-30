@@ -7,17 +7,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:unseco/contants.dart';
+import 'package:unseco/pages/deepSoil/deepSoil20.dart';
 import 'package:unseco/services/dataProvider.dart';
-import 'package:unseco/pages/deepSoil/deepSoil30.dart';
 
-import 'deepsoil10.dart';
+import '../../services/localProvider.dart';
 
-class DeepSoilMoisture20 extends StatefulWidget {
+class TomatoDetection extends StatefulWidget {
   @override
-  State<DeepSoilMoisture20> createState() => _DeepSoilMoisture10State();
+  State<TomatoDetection> createState() => _TomatoDetectionState();
 }
 
-class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
+class _TomatoDetectionState extends State<TomatoDetection> {
   final ImagePicker _picker = ImagePicker();
   String selectedImage = '';
 
@@ -26,60 +26,56 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
     DataProvider dataProvider =
         Provider.of<DataProvider>(context, listen: false);
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: Color(0xff06B1BC),
-      appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.selectSoil("15"),
-              style: GoogleFonts.inter(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white)),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          backgroundColor: Colors.transparent,
-          elevation: 0),
-      body: SafeArea(
-        child: SingleChildScrollView(
+    return Consumer<LocaleProvider>(builder: (context, provider, snapshot) {
+      return Scaffold(
+        backgroundColor: Color(0xff06B1BC),
+        appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            backgroundColor: Colors.transparent,
+            title: Text(AppLocalizations.of(context)!.tomatoTitle,
+                style: GoogleFonts.inter(
+                    fontSize: 23,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white)),
+            elevation: 0),
+        body: SingleChildScrollView(
             child: Container(
-          padding: EdgeInsets.only(right: 30, left: 30),
-          decoration: BoxDecoration(),
+          padding: const EdgeInsets.only(left: 30, right: 30),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => DeepSoilMoisture10())),
-                  child: Container(
-                      height: 120,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Image.asset('assets/images/singleSoil.png'),
-                          const SizedBox(
-                            width: 15,
+                SizedBox(height: 15),
+                Container(
+                    height: 120,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.asset('assets/images/crops/plantT.jpg'),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Expanded(
+                          child: Text(
+                            AppLocalizations.of(context)!.tomatoDesc,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500, fontSize: 20),
+                            overflow: TextOverflow.clip,
                           ),
-                          Expanded(
-                            child: Text(
-                              AppLocalizations.of(context)!.selectSoil("15"),
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.inter(
-                                  fontWeight: FontWeight.w500, fontSize: 20),
-                              overflow: TextOverflow.clip,
-                            ),
-                          )
-                        ],
-                      )),
-                ),
+                        )
+                      ],
+                    )),
                 SizedBox(
-                  height: 25,
+                  height: 30,
                 ),
                 selectedImage == ''
                     ? GestureDetector(
@@ -99,7 +95,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
                     : Container(
                         height: 250, child: Image.file(File(selectedImage))),
                 SizedBox(
-                  height: 25,
+                  height: 30,
                 ),
                 GestureDetector(
                   onTap: () {
@@ -109,7 +105,6 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
                             preferredCameraDevice: CameraDevice.rear)
                         .then((value) {
                       if (value != null) {
-                        dataProvider.addPicture(value, 'top');
                         setState(() {
                           selectedImage = value.path;
                         });
@@ -117,9 +112,9 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
                     });
                   },
                   child: Container(
-                    width: size.width * 0.6,
+                    width: size.width * 0.7,
                     padding: const EdgeInsets.only(
-                        top: 15, bottom: 15, right: 10, left: 10),
+                        top: 20, bottom: 20, right: 10, left: 10),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -146,7 +141,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
                         borderRadius: BorderRadius.circular(20)),
                   ),
                 ),
-                SizedBox(height: 15),
+                SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {
                     _picker
@@ -163,9 +158,9 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
                     });
                   },
                   child: Container(
-                    width: size.width * 0.6,
+                    width: size.width * 0.7,
                     padding: const EdgeInsets.only(
-                        top: 15, bottom: 15, right: 10, left: 10),
+                        top: 20, bottom: 20, right: 10, left: 10),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -192,14 +187,14 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
                         borderRadius: BorderRadius.circular(20)),
                   ),
                 ),
-                SizedBox(height: 15),
+                SizedBox(height: 30),
                 TextButton(
                   onPressed: () {
                     if (selectedImage != '') {
                       dataProvider.upload(selectedImage).then((v) => {
-                            dataProvider.getMoisture('20', v),
+                            dataProvider.getMoisture('10', v),
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (ctx) => DeepSoilMoisture30()))
+                                builder: (ctx) => DeepSoilMoisture20()))
                           });
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -211,7 +206,7 @@ class _DeepSoilMoisture10State extends State<DeepSoilMoisture20> {
                 )
               ]),
         )),
-      ),
-    );
+      );
+    });
   }
 }

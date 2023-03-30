@@ -79,7 +79,9 @@ flutter:
     - assets/weatherIcon/
     - assets/images/crops/
     - assets/images/icons/
+    - assets/images/HomePage/
     - assets/lottie/
+    - assets/logo/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

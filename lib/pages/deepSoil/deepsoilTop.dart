@@ -6,7 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:unseco/dataProvider.dart';
+import 'package:unseco/services/dataProvider.dart';
 
 import '../../contants.dart';
 import '../../services/localProvider.dart';

@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:unseco/contants.dart';
-import 'package:unseco/dataProvider.dart';
+import 'package:unseco/services/dataProvider.dart';
 
 import 'deepSoil40.dart';
 import 'deepsoil10.dart';

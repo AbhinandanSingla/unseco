@@ -7,8 +7,8 @@ import 'package:lottie/lottie.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:translator/translator.dart';
-import 'package:unseco/dataProvider.dart';
 import 'package:unseco/pages/MainPage.dart';
+import 'package:unseco/services/dataProvider.dart';
 import 'package:unseco/services/localProvider.dart';
 
 class ResultScreen extends StatefulWidget {
@@ -120,7 +120,7 @@ class _ResultScreenState extends State<ResultScreen> {
               icon: Icon(Icons.arrow_back_ios_outlined, color: Colors.black),
               onPressed: () {
                 Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (ctx) => MyHomePage()),
+                    MaterialPageRoute(builder: (ctx) => SoilMoisturePage()),
                     (route) => false);
               },
             )),

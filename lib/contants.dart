@@ -15,3 +15,10 @@ Container nextBtn(BuildContext context) {
         textAlign: TextAlign.center),
   );
 }
+
+const bgColor = LinearGradient(
+    colors: [Color(0xff0b9aa3), Color(0xff39a0a8),Color(0xff56D66B)],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomRight);
+
+const double btnHeight = 140;
