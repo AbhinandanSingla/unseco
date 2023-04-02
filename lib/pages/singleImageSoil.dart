@@ -8,9 +8,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:unseco/contants.dart';
-import 'package:unseco/services/dataProvider.dart';
 import 'package:unseco/pages/resultScreen.dart';
+import 'package:unseco/services/dataProvider.dart';
 
 class SingleImage extends StatefulWidget {
   @override
@@ -35,10 +34,9 @@ class _DeepSoilMoisture10State extends State<SingleImage> {
     });
 
     Dio dio = Dio();
-    var response = await dio.post(
-        "https://technocratss.eastus.cloudapp.azure.com/predict",
-        data: data,
-        queryParameters: {'soil_type': "red"});
+    var response = await dio.post("http://20.204.143.35:5000/predict",
+        data: data, queryParameters: {'soil_type': "red"});
+    print(response);
     setState(() {
       loading = false;
     });
@@ -47,9 +45,6 @@ class _DeepSoilMoisture10State extends State<SingleImage> {
 
   @override
   void initState() {
-    Dio dio = Dio();
-
-    // TODO: implement initState
     super.initState();
   }
 
@@ -85,7 +80,6 @@ class _DeepSoilMoisture10State extends State<SingleImage> {
               ),
               decoration: BoxDecoration(),
               child: Column(children: [
-
                 Container(
                     height: 100,
                     padding: const EdgeInsets.all(20),
@@ -246,10 +240,13 @@ class _DeepSoilMoisture10State extends State<SingleImage> {
                       width: double.infinity,
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                          color: Color(0xffFFA030), borderRadius: BorderRadius.circular(15)),
+                          color: Color(0xffFFA030),
+                          borderRadius: BorderRadius.circular(15)),
                       child: Text(AppLocalizations.of(context)!.startAnal,
                           style: GoogleFonts.inter(
-                              fontSize: 20, color: Colors.white, fontWeight: FontWeight.w700),
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700),
                           textAlign: TextAlign.center),
                     ))
               ]),

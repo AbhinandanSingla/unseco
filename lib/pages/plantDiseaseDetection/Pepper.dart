@@ -6,7 +6,6 @@ import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:unseco/contants.dart';
 import 'package:unseco/services/dataProvider.dart';
 
 class PepperDetection extends StatefulWidget {
@@ -182,11 +181,9 @@ class _PepperDetectionState extends State<PepperDetection> {
           TextButton(
             onPressed: () {
               if (selectedImage != '') {
-                dataProvider.upload(selectedImage).then((v) => {
-                      dataProvider.getMoisture('10', v),
-                      // Navigator.of(context).push(MaterialPageRoute(
-                      //     builder: (ctx) => DeepSoilMoisture20()))
-                    });
+                dataProvider
+                    .uploadDisease(selectedImage, 'pepper')
+                    .then((v) => {print(v)});
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text(AppLocalizations.of(context)!.err),
@@ -197,10 +194,13 @@ class _PepperDetectionState extends State<PepperDetection> {
               width: double.infinity,
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                  color: const Color(0xffFFA030), borderRadius: BorderRadius.circular(15)),
+                  color: const Color(0xffFFA030),
+                  borderRadius: BorderRadius.circular(15)),
               child: Text(AppLocalizations.of(context)!.submitBtn,
                   style: GoogleFonts.inter(
-                      fontSize: 20, color: Colors.white, fontWeight: FontWeight.w700),
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700),
                   textAlign: TextAlign.center),
             ),
           )

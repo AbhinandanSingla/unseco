@@ -31,7 +31,9 @@ class DataProvider extends ChangeNotifier {
   }
 
   upload(String file) async {
-    print(file);
+    if (kDebugMode) {
+      print(file);
+    }
     String fileName = file.split('/').last;
     FormData data = FormData.fromMap({
       "file": await MultipartFile.fromFile(
@@ -41,12 +43,35 @@ class DataProvider extends ChangeNotifier {
     });
 
     Dio dio = Dio();
-    var response = await dio.post(
-        "https://technocratss.eastus.cloudapp.azure.com/predict",
+    var response = await dio.post("http://20.204.143.35:5000/predict",
         data: data,
         queryParameters: {'soil_type': soilType.split(' ')[0].toLowerCase()});
 
-    print(response);
+    if (kDebugMode) {
+      print(response);
+    }
+    return response;
+  }
+
+  uploadDisease(String file, plantType) async {
+    if (kDebugMode) {
+      print(file);
+    }
+    String fileName = file.split('/').last;
+    FormData data = FormData.fromMap({
+      "file": await MultipartFile.fromFile(
+        file,
+        filename: fileName,
+      ),
+    });
+
+    Dio dio = Dio();
+    var response = await dio.post("http://20.204.143.35:5000/predictPlantDisease",
+        data: data, queryParameters: {'plant_type': plantType});
+
+    if (kDebugMode) {
+      print(response);
+    }
     return response;
   }
 

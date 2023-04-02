@@ -35,7 +35,7 @@ class _ResultScreenState extends State<ResultScreen> {
     dataProvider.coordinates['lat'];
     dataProvider.coordinates['long'];
     Response data = await dio.get(
-        'https://technocratss.eastus.cloudapp.azure.com/predict-future-moisture',
+        'http://20.204.143.35:5000/predict-future-moisture',
         queryParameters: {
           'moisture': double.parse(widget.percentage).toStringAsFixed(0),
           'soil_type': dataProvider.soilType.split(' ')[0].toLowerCase(),
@@ -59,12 +59,11 @@ class _ResultScreenState extends State<ResultScreen> {
 
   getCrops(soilType) async {
     Dio dio = Dio();
-    Response d = await dio.get(
-        'https://technocratss.eastus.cloudapp.azure.com/eligible-crops',
-        queryParameters: {
-          'soilMoisture': double.parse(widget.percentage).toStringAsFixed(0),
-          'soil_type': soilType.split(' ')[0].toLowerCase(),
-        });
+    Response d = await dio
+        .get('http://20.204.143.35:5000/eligible-crops', queryParameters: {
+      'soilMoisture': double.parse(widget.percentage).toStringAsFixed(0),
+      'soil_type': soilType.split(' ')[0].toLowerCase(),
+    });
     print(d.data);
     return d.data;
   }
