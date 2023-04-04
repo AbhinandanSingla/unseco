@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:unseco/contants.dart';
 import 'package:unseco/services/dataProvider.dart';
 
 import '../../services/localProvider.dart';
@@ -21,7 +20,7 @@ class _TomatoDetectionState extends State<TomatoDetection> {
   final ImagePicker _picker = ImagePicker();
   String selectedImage = '';
   bool plantDisease = false;
-  bool response = true;
+  bool response = false;
 
   @override
   Widget build(BuildContext context) {
@@ -197,29 +196,42 @@ class _TomatoDetectionState extends State<TomatoDetection> {
                     ),
                     SizedBox(height: 30),
                     TextButton(
-                      onPressed: () {
-                        if (selectedImage != '') {
-                          dataProvider
-                              .uploadDisease(selectedImage, 'tomato')
-                              .then((v) => {
-                                    print(v),
-                                    setState(() {
-                                      if (v['status'] == 1) {
-                                        print("============");
-                                      } else {
-                                        print("+++++++++++++++");
-                                        print("+++++++++++++++");
-                                      }
-                                    })
-                                  });
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(AppLocalizations.of(context)!.err),
-                          ));
-                        }
-                      },
-                      child: nextBtn(context),
-                    )
+                        onPressed: () {
+                          if (selectedImage != '') {
+                            var status = '0';
+                            dataProvider
+                                .uploadDisease(selectedImage, 'tomato')
+                                .then((v) => {
+                                      print(v['status']),
+                                      status = v['status'],
+                                      setState(() {
+                                        if (status == '1') {
+                                          plantDisease = true;
+                                        } else {
+                                          plantDisease = false;
+                                        }
+                                        response = true;
+                                      })
+                                    });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(AppLocalizations.of(context)!.err),
+                            ));
+                          }
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              color: Color(0xffFFA030),
+                              borderRadius: BorderRadius.circular(15)),
+                          child: Text(AppLocalizations.of(context)!.submitBtn,
+                              style: GoogleFonts.inter(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700),
+                              textAlign: TextAlign.center),
+                        ))
                   ]),
             ),
             response
@@ -231,18 +243,52 @@ class _TomatoDetectionState extends State<TomatoDetection> {
                     child: Container(
                       width: size.width - 30,
                       decoration: BoxDecoration(color: Colors.white),
-                      child: Container(
-                          child: Column(
-                        children: [
-                          Lottie.asset("assets/lottie/disease.json"),
-                          Text("Plant is Infected",
-                              style: GoogleFonts.inter(fontSize: 20)),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          TextButton(onPressed: (){}, child: Text("Continue"))
-                        ],
-                      )),
+                      child: plantDisease
+                          ? Column(
+                              children: [
+                                Lottie.asset("assets/lottie/disease.json"),
+                                Text(
+                                    AppLocalizations.of(context)!.plantInfected,
+                                    style: GoogleFonts.inter(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.redAccent)),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        selectedImage = '';
+                                        response = false;
+                                      });
+                                    },
+                                    child: const Text("Continue"))
+                              ],
+                            )
+                          : Column(
+                              children: [
+                                Lottie.asset("assets/lottie/noDisease.json"),
+                                Text(
+                                    AppLocalizations.of(context)!
+                                        .plantNotInfected,
+                                    style: GoogleFonts.inter(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.green)),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        selectedImage = '';
+                                        response = false;
+                                      });
+                                    },
+                                    child: Text("Continue"))
+                              ],
+                            ),
                     ),
                   )
                 : Container(),

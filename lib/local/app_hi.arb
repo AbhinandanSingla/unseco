@@ -22,6 +22,16 @@
   "startAnal": "विश्लेषण प्रारंभ करें",
   "err": "कृपया छवि चुनें",
   "soilType": "मिट्टी के प्रकार : {value}",
+  "soilMoistureDetector": "मिट्टी की नमी\nडिटेक्टर\n",
+  "plantDiseaseDetector": "पौधा रोग\nडिटेक्टर\n",
+  "plantDiseaseTitle": "पौधा रोग\nडिटेक्टर\n",
+  "tomatoTitle": "टमाटर",
+  "tomatoDesc": "प्लांट लीव की तस्वीर अपलोड करें",
+  "pepperTitle": "मिर्च",
+  "pepperDesc": "प्लांट लीव की तस्वीर अपलोड करें",
+  "submitBtn": "विश्लेषण प्रारंभ करें",
+  "cropList": "फसलों की सूची\n",
+
   "@soilType": {
     "placeholders": {
       "value": {

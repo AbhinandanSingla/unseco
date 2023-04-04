@@ -51,7 +51,7 @@ class PlantDetectionPage extends StatelessWidget {
                     height: 250),
                 Column(
                   children: [
-                    Text("Crops List",
+                    Text(AppLocalizations.of(context)!.cropList,
                         style: GoogleFonts.openSans(
                             fontSize: 20, fontWeight: FontWeight.w500),
                         textAlign: TextAlign.left),
@@ -81,7 +81,9 @@ class PlantDetectionPage extends StatelessWidget {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.only(top: 20),
-                                        child: Text("Tomato",
+                                        child: Text(
+                                            AppLocalizations.of(context)!
+                                                .tomatoTitle,
                                             style: GoogleFonts.inter(
                                                 fontSize: 20)),
                                       ),
@@ -141,7 +143,9 @@ class PlantDetectionPage extends StatelessWidget {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.only(top: 20),
-                                        child: Text("Pepper",
+                                        child: Text(
+                                            AppLocalizations.of(context)!
+                                                .pepperTitle,
                                             style: GoogleFonts.inter(
                                               fontSize: 20,
                                             )),

@@ -72,7 +72,7 @@ class DataProvider extends ChangeNotifier {
     if (kDebugMode) {
       print(response);
     }
-    return response;
+    return response.data;
   }
 
   addPicture(XFile file, percentage) {

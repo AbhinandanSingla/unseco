@@ -26,10 +26,13 @@
   "plantDiseaseDetector": "Plant Disease \nDetector",
   "plantDiseaseTitle": "Plant Disease Detection",
   "tomatoTitle": "Tomato",
-  "tomatoDesc": "Upload Picture of Plant",
+  "tomatoDesc": "Upload Picture of Plant Leave",
   "pepperTitle": "Pepper",
-  "pepperDesc": "Upload Picture of Plant",
+  "pepperDesc": "Upload Picture of Plant Leave",
   "submitBtn": "Start Analysis",
+  "cropList": "Crops List",
+  "plantNotInfected": "पौधा संक्रमित नहीं है",
+  "plantInfected": "पौधा संक्रमित है\n",
   "@selectSoil": {
     "placeholders": {
       "value": {
