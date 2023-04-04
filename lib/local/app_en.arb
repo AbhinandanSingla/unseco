@@ -31,8 +31,8 @@
   "pepperDesc": "Upload Picture of Plant Leave",
   "submitBtn": "Start Analysis",
   "cropList": "Crops List",
-  "plantNotInfected": "पौधा संक्रमित नहीं है",
-  "plantInfected": "पौधा संक्रमित है\n",
+  "plantNotInfected": "Plant is not Infected",
+  "plantInfected": "Plant is Infected",
   "@selectSoil": {
     "placeholders": {
       "value": {

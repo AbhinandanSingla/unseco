@@ -46,7 +46,7 @@ class _SoilMoisturePageState extends State<SoilMoisturePage> {
                         children: [
                           IconButton(
                               onPressed: () => {Navigator.of(context).pop()},
-                              icon: Icon(Icons.arrow_back_ios_outlined),
+                              icon: const Icon(Icons.arrow_back_ios_outlined),
                               color: Colors.white),
                           Text(
                             AppLocalizations.of(context)!.heading,

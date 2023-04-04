@@ -31,7 +31,8 @@
   "pepperDesc": "प्लांट लीव की तस्वीर अपलोड करें",
   "submitBtn": "विश्लेषण प्रारंभ करें",
   "cropList": "फसलों की सूची\n",
-
+  "plantNotInfected": "पौधा संक्रमित नहीं है",
+  "plantInfected": "पौधा संक्रमित है\n",
   "@soilType": {
     "placeholders": {
       "value": {
